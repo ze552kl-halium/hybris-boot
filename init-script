@@ -237,7 +237,7 @@ check_kernel_config() {
 if [ "$DONE_SWITCH" = "no" ]; then
     EXPLICIT_BUSYBOX=""
     TELNET_DEBUG_PORT=23
-    /bin/busybox --install -s
+    #/bin/busybox --install -s
     date
 
     do_mount_devprocsys

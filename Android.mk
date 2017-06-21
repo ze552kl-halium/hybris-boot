@@ -72,7 +72,8 @@ $(error There should be a one and only one device entry for HYBRIS_BOOT_PART and
 endif
 
 # Command used to make the image
-BB_STATIC := $(PRODUCT_OUT)/utilities/busybox
+TOYBOX_INSTLIST := $(HOST_OUT_EXECUTABLES)/toybox-instlist
+TOYBOX_BINARY := $(TARGET_OUT_EXECUTABLES)/toybox
 
 ifneq ($(strip $(TARGET_NO_KERNEL)),true)
   INSTALLED_KERNEL_TARGET := $(PRODUCT_OUT)/kernel
@@ -138,7 +139,7 @@ $(LOCAL_BUILT_MODULE): $(INSTALLED_KERNEL_TARGET) $(BOOT_RAMDISK) $(BOOTIMAGE_EX
 	@rm -rf $@
 	@mkbootimg --ramdisk $(BOOT_RAMDISK) $(HYBRIS_BOOTIMAGE_ARGS) $(BOARD_MKBOOTIMG_ARGS) --output $@
 
-$(BOOT_RAMDISK): $(BOOT_RAMDISK_FILES) $(BB_STATIC)
+$(BOOT_RAMDISK): $(BOOT_RAMDISK_FILES) $(TOYBOX_INSTLIST) $(TOYBOX_BINARY)
 	@echo "Making initramfs : $@"
 	@rm -rf $(BOOT_INTERMEDIATE)/initramfs
 	@mkdir -p $(BOOT_INTERMEDIATE)/initramfs
@@ -146,7 +147,10 @@ $(BOOT_RAMDISK): $(BOOT_RAMDISK_FILES) $(BB_STATIC)
 # Deliberately do an mv to force rebuild of init every time since it's
 # really hard to depend on things which may affect init.
 	@mv $(BOOT_RAMDISK_INIT) $(BOOT_INTERMEDIATE)/initramfs/init
-	@cp $(BB_STATIC) $(BOOT_INTERMEDIATE)/initramfs/bin/
+	@echo -e ${CL_CYN}"Generate Toybox links:"${CL_RST} $$($(TOYBOX_INSTLIST))
+	@mkdir -p $(BOOT_INTERMEDIATE)/initramfs/bin/
+	@cp $(TOYBOX_BINARY) $(BOOT_INTERMEDIATE)/initramfs/bin/
+	$(hide) $(TOYBOX_INSTLIST) | xargs -I'{}' ln -sf toybox '$(BOOT_INTERMEDIATE)/initramfs/bin/{}'
 	@(cd $(BOOT_INTERMEDIATE)/initramfs && find . | cpio -H newc -o ) | gzip -9 > $@
 
 $(BOOT_RAMDISK_INIT): $(BOOT_RAMDISK_INIT_SRC) $(ALL_PREBUILT)
@@ -181,13 +185,16 @@ $(LOCAL_BUILT_MODULE): $(INSTALLED_KERNEL_TARGET) $(RECOVERY_RAMDISK) $(MKBOOTIM
 	@rm -rf $@
 	$(hide)$(MKBOOTIMG) --ramdisk $(RECOVERY_RAMDISK) $(HYBRIS_RECOVERYIMAGE_ARGS) $(BOARD_MKRECOVERYIMG_ARGS) --output $@
 
-$(RECOVERY_RAMDISK): $(RECOVERY_RAMDISK_FILES) $(BB_STATIC)
+$(RECOVERY_RAMDISK): $(RECOVERY_RAMDISK_FILES) $(TOYBOX_INSTLIST) $(TOYBOX_BINARY)
 	@echo "Making initramfs : $@"
 	@rm -rf $(RECOVERY_INTERMEDIATE)/initramfs
 	@mkdir -p $(RECOVERY_INTERMEDIATE)/initramfs
 	@cp -a $(RECOVERY_RAMDISK_SRC)/*  $(RECOVERY_INTERMEDIATE)/initramfs
 	@mv $(RECOVERY_RAMDISK_INIT) $(RECOVERY_INTERMEDIATE)/initramfs/init
-	@cp $(BB_STATIC) $(RECOVERY_INTERMEDIATE)/initramfs/bin/
+	@echo -e ${CL_CYN}"Generate Toybox links:"${CL_RST} $$($(TOYBOX_INSTLIST))
+	@mkdir -p $(BOOT_INTERMEDIATE)/initramfs/bin/
+	@cp $(TOYBOX_BINARY) $(BOOT_INTERMEDIATE)/initramfs/bin/
+	$(hide) $(TOYBOX_INSTLIST) | xargs -I'{}' ln -sf toybox '$(BOOT_INTERMEDIATE)/initramfs/bin/{}'
 	@(cd $(RECOVERY_INTERMEDIATE)/initramfs && find . | cpio -H newc -o ) | gzip -9 > $@
 
 $(RECOVERY_RAMDISK_INIT): $(RECOVERY_RAMDISK_INIT_SRC) $(ALL_PREBUILT)
