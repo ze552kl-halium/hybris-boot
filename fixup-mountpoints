@@ -1488,7 +1488,7 @@ case "$DEVICE" in
 	    "$@"
 	;;
 
-    "land")
+    "land" | "rolex" | "riva")
         sed -i \
 	    -e 's block/bootdevice/by-name/system mmcblk0p24 ' \
 	    -e 's block/bootdevice/by-name/userdata mmcblk0p49 ' \
