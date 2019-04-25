@@ -1765,7 +1765,7 @@ case "$DEVICE" in
            "$@"
         ;;
         
-        "axon7")
+    "axon7")
         sed -i \
             -e 's block/bootdevice/by-name/system sde13 ' \
             -e 's block/bootdevice/by-name/userdata sda9 ' \
