@@ -1775,6 +1775,17 @@ case "$DEVICE" in
             -e 's block/bootdevice/by-name/modem sde7 ' \
             -e 's block/bootdevice/by-name/bluetooth sde16 ' \
             "$@"
+        ;;    
+        
+    "mata")
+        sed -i \
+            -e 's block/bootdevice/by-name/system block/platform/soc/1da4000.ufshc/by-name/system ' \
+	    -e 's block/bootdevice/by-name/userdata sda16 ' \
+	    -e 's block/bootdevice/by-name/modem block/platform/soc/1da4000.ufshc/by-name/modem ' \
+	    -e 's block/bootdevice/by-name/bluetooth block/platform/soc/1da4000.ufshc/by-name/bluetooth ' \
+	    -e 's block/bootdevice/by-name/dsp block/platform/soc/1da4000.ufshc/by-name/dsp ' \
+	    -e 's block/bootdevice/by-name/persist sda4 ' \
+            "$@"
         ;;
 
     *)
