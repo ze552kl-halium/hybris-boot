@@ -1806,6 +1806,17 @@ case "$DEVICE" in
             -e 's /dev/block/bootdevice/by-name/modem /dev/block/mmcblk0p3 ' \
             "$@"
         ;;
+	
+    "loganreltexx")
+        sed -i \
+            -e 's /dev/block/platform/msm_sdcc.1/by-name/system /dev/block/mmcblk0p20 ' \
+            -e 's /dev/block/platform/msm_sdcc.1/by-name/userdata /dev/block/mmcblk0p23 ' \
+            -e 's /dev/block/platform/msm_sdcc.1/by-name/cache /dev/block/mmcblk0p21 ' \
+            -e 's /dev/block/platform/msm_sdcc.1/by-name/efs /dev/block/mmcblk0p10 ' \
+            -e 's /dev/block/platform/msm_sdcc.1/by-name/persist /dev/block/mmcblk0p19 ' \
+            -e 's /dev/block/platform/msm_sdcc.1/by-name/modem /dev/block/mmcblk0p1 ' \
+            "$@"
+        ;; 
 
     *)
         cat <<EOF
