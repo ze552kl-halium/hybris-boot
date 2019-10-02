@@ -1822,7 +1822,7 @@ case "$DEVICE" in
         sed -i \
             -e 's /dev/block/bootdevice/by-name/system /dev/block/mmcblk0p66 ' \
             -e 's /dev/block/bootdevice/by-name/userdata /dev/block/mmcblk0p67 ' \
-            -e 's /dev/block/bootdevice/by-name/cache /dev/block/bootdevice/by-name/cache ' \
+            -e 's /dev/block/bootdevice/by-name/cache /dev/block/mmcblk0p65 ' \
             "$@"
         ;;
 
